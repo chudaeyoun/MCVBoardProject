@@ -5,18 +5,10 @@
 <%@page contentType="text/html; charset=EUC-KR"%>
 
 <%
-	// 0. 세션 체크
+	// 세션에 등록된 검색 결과를 꺼낸다.
 	UserVO user = (UserVO) session.getAttribute("user");
-	if(user == null) {
-		response.sendRedirect("login.html");
-	} else {
-
-	// 1. 사용자 입력정보 추출(검색 기능은 나중에...)
-	// 2. DB 연동 처리
-	BoardDAO boardDAO = new BoardDAO();
-	List<BoardVO> boardList = boardDAO.getBoardList();
+	List<BoardVO> boardList = (List) session.getAttribute("boardList");
 	
-	// 3. 응답 화면 구성
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -72,6 +64,5 @@
 </center>
 </body>
 </html>
-<% } %>
 
 

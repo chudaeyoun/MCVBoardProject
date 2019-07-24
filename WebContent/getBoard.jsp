@@ -4,17 +4,7 @@
 <%@page contentType="text/html; charset=EUC-KR"%> 
    
 <%
-	// 1. 사용자 입력정보 추출
-	String seq = request.getParameter("seq");
-	
-	// 2. DB 연동 처리
-	BoardVO vo = new BoardVO();
-	vo.setSeq(Integer.parseInt(seq));
-	
-	BoardDAO boardDAO = new BoardDAO();
-	BoardVO board = boardDAO.getBoard(vo);
-	
-	// 3. 응답 화면 구성
+	BoardVO board = (BoardVO) session.getAttribute("board");
 %>
    
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -63,9 +53,9 @@
 	UserVO user = (UserVO) session.getAttribute("user");
 	if(user.getRole().equals("Admin")) {
 %>
-<a href="deleteBoard_proc.jsp?seq=<%= board.getSeq() %>">글삭제</a>&nbsp;&nbsp;&nbsp;
+<a href="deleteBoard.do?seq=<%= board.getSeq() %>">글삭제</a>&nbsp;&nbsp;&nbsp;
 <%	} %>
-<a href="getBoardList.jsp">글목록</a>
+<a href="getBoardList.do">글목록</a>
 </center>
 </body>
 </html>

@@ -1,15 +1,5 @@
-<%@page import="com.multicampus.biz.user.UserVO"%>
-<%@page import="com.multicampus.biz.board.BoardVO"%>
-<%@page import="java.util.List"%>
-<%@page import="com.multicampus.biz.board.BoardDAO"%>
 <%@page contentType="text/html; charset=EUC-KR"%>
-
-<%
-	// 세션에 등록된 검색 결과를 꺼낸다.
-	UserVO user = (UserVO) session.getAttribute("user");
-	List<BoardVO> boardList = (List) session.getAttribute("boardList");
-	
-%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -20,7 +10,7 @@
 <body>
 <center>
 <h1>게시 글 목록</h1>
-<h3><font color="red"><%= user.getName() %></font>님 로그인 환영합니다...<a href="logout_proc.jsp">Log-out</a></h3>
+<h3><font color="red">${user.name}</font>님 로그인 환영합니다...<a href="logout.do">Log-out</a></h3>
 
 <!-- 검색 시작 -->
 <form action="getBoardList.jsp" method="post">
@@ -48,15 +38,15 @@
 	<th bgcolor="orange" width="100">조회수</th>
 </tr>
 
-<% for(BoardVO board : boardList) { %>
+<c:forEach var="board" items="${boardList}">
 <tr>
-	<td><%= board.getSeq() %></td>
-	<td align="left"><a href="getBoard.jsp?seq=<%= board.getSeq() %>"><%= board.getTitle() %></a></td>
-	<td><%= board.getWriter() %></td>
-	<td><%= board.getRegDate() %></td>
-	<td><%= board.getCnt() %></td>
+	<td>${board.seq}</td>
+	<td align="left"><a href="getBoard.do?seq=${board.seq} %>">${board.title}</a></td>
+	<td>${board.writer}</td>
+	<td>${board.regDate}</td>
+	<td>${board.cnt}</td>
 </tr>
-<% } %>
+</c:forEach>
 
 </table>
 <br>

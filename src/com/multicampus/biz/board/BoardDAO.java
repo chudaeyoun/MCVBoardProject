@@ -20,9 +20,11 @@ public class BoardDAO {
 	private final String BOARD_INSERT = "insert into board(seq, title, writer, content) " + 
                                         "values((select nvl(max(seq), 0) + 1 from board), ?, ?, ?)";
 	private final String BOARD_UPDATE = "update board set title=?, content=? where seq=?";
+	private final String BOARD_UPDATE_CNT = "update board set cnt=cnt + 1 where seq=?";
 	private final String BOARD_DELETE = "delete board where seq=?";
 	private final String BOARD_GET    = "select * from board where seq=?";
-	private final String BOARD_LIST   = "select * from board order by seq desc";
+	private final String BOARD_LIST_T = "select * from board where title like '%'||?||'%' order by seq desc";
+	private final String BOARD_LIST_C = "select * from board where content like '%'||?||'%' order by seq desc";
 	
 	// BOARD 테이블과 관련된 CRUD 메소드
 	// 글 등록
@@ -84,6 +86,10 @@ public class BoardDAO {
 			stmt.setInt(1, vo.getSeq());
 			rs = stmt.executeQuery();	
 			if(rs.next()) {
+				stmt = conn.prepareStatement(BOARD_UPDATE_CNT);
+				stmt.setInt(1, vo.getSeq());
+				stmt.executeUpdate();
+				
 				board = new BoardVO();
 				board.setSeq(rs.getInt("SEQ"));
 				board.setTitle(rs.getString("TITLE"));
@@ -101,12 +107,17 @@ public class BoardDAO {
 	}
 	
 	// 글 목록 검색
-	public List<BoardVO> getBoardList() {
+	public List<BoardVO> getBoardList(BoardVO vo) {
 		System.out.println("===> JDBC 기반으로 getBoardList() 기능 처리");
 		List<BoardVO> boardList = new ArrayList<BoardVO>();
 		try {
 			conn = JDBCUtil.getConnection();
-			stmt = conn.prepareStatement(BOARD_LIST);
+			if(vo.getSearchCondition().equals("TITLE")) {
+				stmt = conn.prepareStatement(BOARD_LIST_T);
+			} else if(vo.getSearchCondition().equals("CONTENT")) {
+				stmt = conn.prepareStatement(BOARD_LIST_C);
+			}
+			stmt.setString(1, vo.getSearchKeyword());
 			rs = stmt.executeQuery();	
 			while(rs.next()) {
 				BoardVO board = new BoardVO();
